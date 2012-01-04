@@ -1,0 +1,12 @@
+Source: rhythmbox-tray-icon
+Section: python
+Priority: extra
+Maintainer: Tom Parker <palfrey@tevp.net>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.2
+Homepage: http://github.com/palfrey/rhythmbox-tray-icon
+
+Package: rhythmbox-tray-icon
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, rhythmbox (>=2.90)
+Description: Restores the tray icon functionality from the 0.x series.

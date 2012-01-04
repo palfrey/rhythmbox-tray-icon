@@ -1,0 +1,9 @@
+[Plugin]
+Loader=python
+Module=tray_icon
+IAge=2
+Name=Tray Icon
+Description=Tray Icon
+Authors=Tom Parker <palfrey@tevp.net>
+Copyright=Copyright © 2012 Tom Parker
+Website=http://github.com/palfrey/rhythmbox-tray-icon
