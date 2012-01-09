@@ -21,10 +21,16 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 	def previous(self, widget):
 		self.player.do_previous()
 
+	def hide_on_delete(self, widget, event):
+		self.wind.hide()
+		return True # don't actually delete
+
 	def do_activate(self):
 		self.shell = self.object
 		self.wind = self.shell.get_property("window")
 		self.player = self.shell.props.shell_player
+
+		self.wind.connect("delete-event", self.hide_on_delete)
 
 		ui = Gtk.UIManager()
 		ui.add_ui_from_string(
