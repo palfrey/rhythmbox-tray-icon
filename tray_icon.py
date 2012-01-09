@@ -10,7 +10,10 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 
 	def toggle(self, icon, event, data = None):
 		if event.button == 1: # left button
-			self.wind.set_visible(not self.wind.get_visible())
+			if self.wind.get_visible():
+				self.wind.hide()
+			else:
+				self.wind.show()
 
 	def play(self, widget):
 		self.player.playpause(True) # does nothing argument
