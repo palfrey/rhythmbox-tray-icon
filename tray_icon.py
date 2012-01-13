@@ -1,4 +1,9 @@
-from gi.repository import Gtk, Gdk, RB, Peas, GObject
+from gi.repository import Gtk, Gdk, GdkPixbuf, Peas, GObject
+import cairo
+
+iconsPath = "/usr/share/icons/"
+rhythmboxIcon = iconsPath + "hicolor/32x32/apps/rhythmbox.png"
+playIcon = iconsPath + "gnome/32x32/actions/media-playback-start.png"
 
 class TrayIcon(GObject.Object, Peas.Activatable):
 
@@ -27,6 +32,12 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 	def hide_on_delete(self, widget, event):
 		self.wind.hide()
 		return True # don't actually delete
+
+	def set_playing_icon(self, player, playing):
+		if playing:
+			self.icon.set_property("pixbuf", self.playIcon)
+		else:
+			self.icon.set_property("pixbuf", self.normalIcon)
 
 	def do_activate(self):
 		self.shell = self.object
@@ -58,9 +69,19 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 				])
 		ui.insert_action_group(ag)
 		self.popup = ui.get_widget("/PopupMenu")
-		self.icon = Gtk.StatusIcon.new_from_file("/usr/share/pixmaps/rhythmbox-small.xpm")
+		
+		s1 = cairo.ImageSurface.create_from_png(rhythmboxIcon)
+		s2 = cairo.ImageSurface.create_from_png(playIcon)
+		ctx = cairo.Context(s1)
+		ctx.set_source_surface(s2, 0, 0)
+		ctx.paint()
+		self.playIcon = Gdk.pixbuf_get_from_surface(s1, 0, 0, s1.get_width(), s1.get_height())
+
+		self.normalIcon = GdkPixbuf.Pixbuf.new_from_file(rhythmboxIcon)
+		self.icon = Gtk.StatusIcon.new_from_pixbuf(self.normalIcon)
 		self.icon.connect("popup-menu", self.popup_menu)
 		self.icon.connect("button-press-event", self.toggle)
+		self.player.connect("playing-changed", self.set_playing_icon)
 
 	def do_deactivate(self):
 		self.icon.set_visible(False)
