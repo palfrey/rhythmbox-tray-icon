@@ -13,3 +13,4 @@ If you don't use the package, you'll need the following other packages installed
 * gir1.2-gtk-3.0
 * gir1.2-gdkpixbuf-2.0
 * python-cairo
+* gnome-icon-theme
