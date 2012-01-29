@@ -19,6 +19,7 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 				self.wind.hide()
 			else:
 				self.wind.show()
+				self.wind.present()
 
 	def play(self, widget):
 		self.player.playpause(True) # does nothing argument
