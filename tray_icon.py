@@ -30,6 +30,9 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 	def previous(self, widget):
 		self.player.do_previous()
 
+	def quit(self, widget):
+		self.shell.quit()
+
 	def hide_on_delete(self, widget, event):
 		self.wind.hide()
 		return True # don't actually delete
@@ -66,7 +69,7 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 				("PlayPause",Gtk.STOCK_MEDIA_PLAY,"Play/Pause",None, None, self.play),
 				("Next",Gtk.STOCK_MEDIA_NEXT,"Next",None, None, self.nextItem),
 				("Previous",Gtk.STOCK_MEDIA_PREVIOUS,"Previous",None, None, self.previous),
-				("Quit",None,"Quit",None, None, Gtk.main_quit)
+				("Quit",None,"Quit",None, None, self.quit)
 				])
 		ui.insert_action_group(ag)
 		self.popup = ui.get_widget("/PopupMenu")
