@@ -30,7 +30,7 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 	def previous(self, widget):
 		self.player.do_previous()
 
-	def quit(self, widget):
+ 	def quit(self, widget):
 		self.shell.quit()
 
 	def hide_on_delete(self, widget, event):
@@ -83,9 +83,19 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 
 		self.normalIcon = GdkPixbuf.Pixbuf.new_from_file(rhythmboxIcon)
 		self.icon = Gtk.StatusIcon.new_from_pixbuf(self.normalIcon)
+		self.icon.connect("scroll-event", self.scroll)
 		self.icon.connect("popup-menu", self.popup_menu)
 		self.icon.connect("button-press-event", self.toggle)
 		self.player.connect("playing-changed", self.set_playing_icon)
+
+	def scroll(self, widget, event):
+		if self.player.playpause(True):
+			# scroll up for previous track
+			if event.direction == Gdk.ScrollDirection.UP:
+				self.previous(widget)
+			# scroll down for next track
+			elif event.direction == Gdk.ScrollDirection.DOWN:
+				self.nextItem(widget)
 
 	def do_deactivate(self):
 		self.icon.set_visible(False)
