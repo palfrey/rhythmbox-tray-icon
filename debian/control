@@ -8,5 +8,6 @@ Homepage: http://github.com/palfrey/rhythmbox-tray-icon
 
 Package: rhythmbox-tray-icon
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, rhythmbox (>=2.90), gir1.2-rb-3.0, gir1.2-gtk-3.0, gir1.2-gdkpixbuf-2.0, python-gi-cairo, gnome-icon-theme
+Depends: ${shlibs:Depends}, ${misc:Depends}, rhythmbox (>=2.90), gir1.2-rb-3.0, gir1.2-gtk-3.0, gir1.2-gdkpixbuf-2.0, python-gi-cairo, gnome-icon-theme-full | gnome-icon-theme
 Description: Restores the tray icon functionality from the 0.x series.
+ If you're running Ubuntu, install gnome-icon-theme-full

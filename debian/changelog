@@ -1,3 +1,9 @@
+rhythmbox-tray-icon (0.2-2) unstable; urgency=low
+
+  * Add gnome-icon-theme-full dependency for (X)Ubuntu
+
+ -- Tom Parker <palfrey@tevp.net>  Mon, 06 Aug 2012 23:01:33 +0100
+
 rhythmbox-tray-icon (0.2-1) unstable; urgency=low
 
   * Add play/not-play icon
