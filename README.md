@@ -1,7 +1,7 @@
 Rhythmbox tray icon plugin
 ==========================
 
-Restores the tray icon functionality from the 0.x series. Requires 2.9+
+Restores the tray icon functionality from the 0.x series. Requires 3+
 
 Install Procedure
 -----------------
