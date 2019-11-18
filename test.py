@@ -7,7 +7,12 @@ problems = False
 for line in open(sys.argv[1]).readlines():
     if line.strip() == "":
         continue
-    items = line_pattern.search(line).groupdict()
+    try:
+        items = line_pattern.search(line).groupdict()
+    except AttributeError:
+        problems = True
+        sys.stdout.write(line)
+        continue
     if items['group'] in ['dbind', 'libdmapsharing']:
         continue
     if items['message'].startswith("Unable to start mDNS browsing"):
