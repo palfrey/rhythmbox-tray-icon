@@ -1,0 +1,10 @@
+language: python
+python: 3.7
+
+services:
+  - docker
+
+script:
+  - docker build -f Dockerfile.test -t rti . || travis_terminate 1
+  - docker run -v `pwd`:/root/.local/share/rhythmbox/plugins/rhythmbox-tray-icon rti || travis_terminate 1
+  - python test.py || travis_terminate 1

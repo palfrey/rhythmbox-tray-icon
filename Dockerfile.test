@@ -1,0 +1,9 @@
+# Testing Dockerfile
+
+FROM debian:stable-slim
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends rhythmbox rhythmbox-plugins
+RUN apt-get install -y --no-install-recommends tigervnc-standalone-server tigervnc-common xterm dbus-x11
+RUN mkdir /root/.vnc && echo foobar | vncpasswd -f > /root/.vnc/passwd && chmod 0600 /root/.vnc/passwd
+RUN apt-get install -y --no-install-recommends fluxbox dconf-cli
+CMD /root/.local/share/rhythmbox/plugins/rhythmbox-tray-icon/test.sh
