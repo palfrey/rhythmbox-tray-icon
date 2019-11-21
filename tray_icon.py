@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Gdk, GdkPixbuf, Peas, GObject
+from gi.repository import Gtk, Gdk, GdkPixbuf, Peas, GObject, RB
 import cairo
 
 iconsPath = "/usr/share/icons/"
@@ -20,9 +20,11 @@ class TrayIcon(GObject.Object, Peas.Activatable):
             else:
                 self.wind.show()
                 self.wind.present()
+        elif event.button == 2: # middle button
+            self.player.playpause()
 
     def play(self, widget):
-        self.player.playpause(True) # does nothing argument
+        self.player.playpause()
 
     def nextItem(self, widget):
         self.player.do_next()
@@ -37,11 +39,41 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         self.wind.hide()
         return True # don't actually delete
 
-    def set_playing_icon(self, player, playing):
-        if playing:
+    def playing_changed(self, player, song):
+        self.icon.set_tooltip_text(self.get_icon_title())
+        if song:
             self.icon.set_property("pixbuf", self.playIcon)
         else:
             self.icon.set_property("pixbuf", self.normalIcon)
+
+    def playing_song_changed (self, player, song):
+        self.icon.set_tooltip_text(self.get_icon_title())
+
+    def playing_song_property_changed(self, player, uri, property, old, new):
+        self.icon.set_tooltip_text(self.get_icon_title())
+
+    def get_icon_title(self):
+        self.shell = self.object
+        self.player = self.shell.props.shell_player
+        self.song = self.player.get_playing_entry()
+        self.db = self.shell.get_property("db")
+        try:
+            self.current_title = self.song.get_string(RB.RhythmDBPropType.TITLE)
+        except AttributeError:
+            return "Not playing."
+        # no stream: title + artist
+        # stream: stream title + titel
+        if self.song.get_entry_type().props.category != RB.RhythmDBEntryCategory.STREAM: # no stream
+            self.current_artist = self.song.get_string(RB.RhythmDBPropType.ARTIST)
+            return self.current_title + "\r" + self.current_artist
+        else: # stream
+            self.current_stream_title = self.db.entry_request_extra_metadata(self.song, "rb:stream-song-title")
+            if self.current_stream_title is None:
+                return "\r" + self.current_title
+            elif self.current_title is None:
+                return self.current_stream_title + "\r"
+            else:
+                return self.current_stream_title + "\r" + self.current_title
 
     def do_activate(self):
         self.shell = self.object
@@ -83,13 +115,16 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 
         self.normalIcon = GdkPixbuf.Pixbuf.new_from_file(rhythmboxIcon)
         self.icon = Gtk.StatusIcon.new_from_pixbuf(self.normalIcon)
+        self.icon.set_tooltip_text(self.get_icon_title())
         self.icon.connect("scroll-event", self.scroll)
         self.icon.connect("popup-menu", self.popup_menu)
         self.icon.connect("button-press-event", self.toggle)
-        self.player.connect("playing-changed", self.set_playing_icon)
+        self.player.connect("playing-changed", self.playing_changed)
+        self.player.connect("playing-song-changed", self.playing_song_changed)
+        self.player.connect("playing-song-property-changed", self.playing_song_property_changed)
 
     def scroll(self, widget, event):
-        if self.player.playpause(True):
+        if self.player.playpause():
             # scroll up for previous track
             if event.direction == Gdk.ScrollDirection.UP:
                 self.previous(widget)
